@@ -1,0 +1,107 @@
+<div ng-controller="homeController">
+
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active" id="buy-nav" data-toggle="tab" ng-href="#buyTab" role="tab" aria-controls="buyTab" aria-selected="true">Buy</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="sell-nav" data-toggle="tab" ng-href="#sellTab" role="tab" aria-controls="sellTab" aria-selected="false">Sell</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="account-nav" data-toggle="tab" ng-href="#accountTab" role="tab" aria-controls="accountTab" aria-selected="false">My Account</a>
+  </li>
+</ul>
+
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane fade show active" id="buyTab" role="tabpanel" aria-labelledby="buyTab">
+      <!-- <div class="spinner-border" role="status" ng-hide="productsLoaded">
+        <span class="sr-only">Loading...</span>
+      </div> -->
+      <div ng-show="productsLoaded" ng-repeat="prod in products">
+          <h3>{{prod.title}}</h3>
+          <p>{{prod.description}}</p>
+          <p>{{prod.price}}</p>
+          <small>Expires on {{prod.expiryDate}}</small>
+          <hr>
+      </div>
+      
+  </div>
+  <div class="tab-pane fade" id="sellTab" role="tabpanel" aria-labelledby="sellTab">
+
+<form ng-submit="addProduct()">
+  <div class="form-group">
+    <label for="title">Title</label>
+    <input type="text" ng-model="title" class="form-control" id="title">
+  </div>
+  <div class="form-group">
+    <label for="description">Description</label>
+    <input type="text" ng-model="description" class="form-control" id="description">
+  </div>
+  <div class="form-group">
+    <label for="price">Price</label>
+    <input type="text" ng-model="price" class="form-control" id="price">
+  </div>
+  <div class="form-group">
+    <label for="category">Category</label>
+    <input type="text" ng-model="category" class="form-control" id="category">
+  </div>
+  <div class="form-group">
+    <label for="expiryDate">Expiry Date</label>
+    <input type="text" ng-model="expiryDate" class="form-control" id="expiryDate">
+  </div>
+
+  <button type="submit" class="btn btn-primary">Submit</button>
+  <div style="height:1000cm"></div>
+</form>
+
+  </div>
+  <div class="tab-pane fade" id="accountTab" role="tabpanel" aria-labelledby="accountTab" style="height:1000cm">Work In Progress!!</div>
+</div>
+
+
+<form ng-submit="logIn()" ng-hide="isValidUser">
+  <div class="form-group">
+    <label for="logInUsername">Username</label>
+    <input type="text" ng-model="username" class="form-control" id="logInUsername" aria-describedby="usernameHelp">
+  </div>
+  <div class="form-group">
+    <label for="logInPassword">Password</label>
+    <input type="password" ng-model="password" class="form-control" id="logInPassword">
+  </div>
+  <button type="submit" class="btn btn-primary">Log in</button>
+</form>
+
+<form ng-submit="signUp()" ng-hide="isValidUser">
+  <div class="form-group">
+    <label for="signUpName">Name</label>
+    <input type="text" ng-model="signUpName" class="form-control" id="signUpName">
+  </div>
+  <div class="form-group">
+    <label for="signUpEmail">E-mail</label>
+    <input type="email" ng-model="signUpEmail" class="form-control" id="signUpEmail">
+  </div>
+  <div class="form-group">
+    <label for="signUpPhone">Phone</label>
+    <input type="text" ng-model="signUpPhone" class="form-control" id="signUpPhone">
+  </div>
+  <div class="form-group">
+    <label for="signUpAddress">Address</label>
+    <input type="text" ng-model="signUpAddress" class="form-control" id="signUpAddress">
+  </div>
+  <div class="form-group">
+    <label for="signUpUsername">Username</label>
+    <input type="text" ng-model="signUpUsername" class="form-control" id="signUpUsername">
+  </div>
+  <div class="form-group">
+    <label for="signUpPassword">Choose Password</label>
+    <input type="password" ng-model="signUpPassword" class="form-control" id="signUpPassword">
+  </div>
+  <div class="form-group">
+    <label for="signUpPasswordCnf">Confirm Password</label>
+    <input type="password" ng-model="signUpPasswordCnf" class="form-control" id="signUpPasswordCnf">
+  </div>
+  <button type="submit" class="btn btn-primary" ng-disabled="signUpPassword!=signUpPasswordCnf">Sign up</button>
+</form>
+
+</div>
+

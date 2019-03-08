@@ -1,0 +1,41 @@
+<div ng-controller="userController">
+
+<h1>Welcome {{username}}!</h1>
+
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active" id="buy-nav" data-toggle="tab" ng-href="#!/user/{{username}}#buyTab" role="tab" aria-controls="buyTab" aria-selected="true">Buy</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="sell-nav" data-toggle="tab" ng-href="#!/user/{{username}}#sellTab" role="tab" aria-controls="sellTab" aria-selected="false">Sell</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="account-nav" data-toggle="tab" ng-href="#!/user/{{username}}#accountTab" role="tab" aria-controls="accountTab" aria-selected="false">My Account</a>
+  </li>
+</ul>
+
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane fade show active" id="buyTab" role="tabpanel" aria-labelledby="buyTab">buyTab</div>
+  <div class="tab-pane fade" id="sellTab" role="tabpanel" aria-labelledby="sellTab">sellTab</div>
+  <div class="tab-pane fade" id="accountTab" role="tabpanel" aria-labelledby="accountTab">accountTab</div>
+</div>
+
+<!--
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#!/user/{{username}}#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#!/user/{{username}}#profile" role="tab" aria-controls="profile" aria-selected="false">Profile</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#!/user/{{username}}#contact" role="tab" aria-controls="contact" aria-selected="false">Contact</a>
+  </li>
+</ul>
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">Home</div>
+  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">Profile</div>
+  <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">Contact</div>
+</div>
+-->
+</div>
