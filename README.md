@@ -1,6 +1,6 @@
 Tools required:
-Java 8
-Spring Boot (can be installed in Eclipse)
+Java 8,
+Spring Boot (can be installed in Eclipse),
 Maven
 
 Run this command from the directory where pom.xml is located:
