@@ -16,10 +16,25 @@ public class WebController {
 	public @ResponseBody List<Product> getProducts() {
 		return FileOperations.getAllProducts();
 	}
+
+	@RequestMapping(value = "/getWishlist", method = RequestMethod.GET)
+	public @ResponseBody List<Product> getWishlist(@RequestParam String username) {
+		return FileOperations.getWishlist(username);
+	}
 	
 	@RequestMapping(value = "/addProduct", method = RequestMethod.POST)
 	public @ResponseBody boolean addProduct(@RequestBody Product prod) {
 		return FileOperations.addProduct(prod);
+	}
+	
+	@RequestMapping(value = "/markAsSold", method = RequestMethod.GET)
+	public @ResponseBody boolean markAsSold(@RequestParam String id) {
+		return FileOperations.markAsSold(id);
+	}
+	
+	@RequestMapping(value = "/addToWishlist", method = RequestMethod.GET)
+	public @ResponseBody boolean addToWishlist(@RequestParam("id") String id, @RequestParam("username") String username) {
+		return FileOperations.addToWishlist(id, username);
 	}
 	
 	@RequestMapping(value = "/validateUser", method = RequestMethod.POST)

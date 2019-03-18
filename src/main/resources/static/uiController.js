@@ -20,7 +20,48 @@ app.controller('homeController', function($scope, $http, $location, $route) {
         $http.get('/getProducts')
         .then(function(response) {
             $scope.products = response.data;
+            fillUnsoldProducts();
+            fillUnsoldHistoryForUser();
+            fillSoldHistoryForUser();
             $scope.productsLoaded = true;
+        });
+    }
+
+    function fillUnsoldProducts() {
+        $scope.productsUnsold = [];
+        for(var i in $scope.products) {
+            if($scope.products[i].status === 'UNSOLD') {
+                $scope.productsUnsold.push($scope.products[i]);
+            }
+        }
+    }
+
+    function fillUnsoldHistoryForUser() {
+        $scope.unsoldHistory = [];
+        for(var i in $scope.products) {
+            if($scope.products[i].seller === $scope.username && 
+                    $scope.products[i].status === 'UNSOLD') {
+                $scope.unsoldHistory.push($scope.products[i]);
+            }
+        }
+    }
+
+    function fillSoldHistoryForUser() {
+        $scope.soldHistory = [];
+        for(var i in $scope.products) {
+            if($scope.products[i].seller === $scope.username && 
+                    $scope.products[i].status === 'SOLD') {
+                $scope.soldHistory.push($scope.products[i]);
+            }
+        }
+    }
+
+    function loadWishlist() {
+        $scope.wishlistLoaded = false;
+        $http.get('/getWishlist?username=' + $scope.username)
+        .then(function(response) {
+            $scope.wishlist = response.data;
+            $scope.wishlistLoaded = true;
         });
     }
 
@@ -39,6 +80,7 @@ app.controller('homeController', function($scope, $http, $location, $route) {
             if(response.data === true) {
                 $scope.isValidUser = true;
                 loadProducts();
+                loadWishlist();
             }
             else {
                 alert('Invalid credentials!');
@@ -67,6 +109,7 @@ app.controller('homeController', function($scope, $http, $location, $route) {
             if(response.data === true) {
                 $scope.isValidUser = true;
                 loadProducts();
+                loadWishlist();
             }
             else {
                 alert('Could not sign up!');
@@ -82,12 +125,11 @@ app.controller('homeController', function($scope, $http, $location, $route) {
     $scope.price = '';
     $scope.category = '';
     $scope.expiryDate = '';
-    $scope.images = [];
+    $scope.images = '';
 
     $scope.addProduct = function() {
         $scope.publishDate = new Date().toString();
         $scope.publishDate = $scope.publishDate.slice(0, $scope.publishDate.lastIndexOf(':'));
-        $scope.images = $scope.images.split(',');
 
         $http.post('/addProduct', {
             title : $scope.title,
@@ -97,7 +139,7 @@ app.controller('homeController', function($scope, $http, $location, $route) {
             expiryDate : $scope.expiryDate,
             seller : $scope.username,
             publishDate : $scope.publishDate,
-            images : $scope.images
+            images : $scope.images.split(',')
         })
         .then(function(response) {
             if(response.data === true) {
@@ -107,6 +149,7 @@ app.controller('homeController', function($scope, $http, $location, $route) {
                 $scope.price = '';
                 $scope.category = '';
                 $scope.expiryDate = '';
+                loadProducts();
             }
             else {
                 alert('Could not sign up!');
@@ -128,8 +171,24 @@ app.controller('homeController', function($scope, $http, $location, $route) {
 
         $http.get('/getUser?username=' + uname)
         .then(function(response) {
+            $http.get('/addToWishlist?id=' + productId + '&username=' + $scope.username)
+            .then(function(response) {
+                if(response.data) {
+                    loadWishlist();
+                }
+            });
             alert('Please contact ' + response.data.name 
             + ' at email ' + response.data.email + ' or phone ' + response.data.phone);
+        });
+    };
+
+    $scope.markAsSold = function(productId) {
+        $http.get('/markAsSold?id=' + productId)
+        .then(function(response) {
+            if(response.data) {
+                loadProducts();
+                alert('Product marked as sold!');
+            }
         });
     };
 });

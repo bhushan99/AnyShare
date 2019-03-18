@@ -28,7 +28,7 @@
       <div class="spinner-border" role="status" ng-hide="productsLoaded">
         <span class="sr-only">Loading...</span>
       </div>
-      <div ng-show="productsLoaded" ng-repeat="prod in products" class="card">
+      <div ng-show="productsLoaded" ng-repeat="prod in productsUnsold" class="card">
         <div class="row">
          <div class="col-sm-6 col-md-6 col-lg-6">
           <div class="card-block">
@@ -41,7 +41,7 @@
           </div>
          </div>
          <div class="col-sm-6 col-md-6 col-lg-6">
-            <img src="images/1.png" class="card-img-bottom">
+            <img src="{{prod.images[0]}}" class="card-img-bottom">
          </div>
         </div> 
         
@@ -80,7 +80,63 @@
 </div>
 
 <div ng-show="isValidUser && action==='myAccount'">
-    My Account page
+    <h3 ng-show="unsoldHistory.length">Your Unsold Products:</h3>
+    <div ng-repeat="prod in unsoldHistory" class="card">
+        <div class="row">
+         <div class="col-sm-6 col-md-6 col-lg-6">
+          <div class="card-block">
+            <h3 class="card-title">{{prod.title}}</h3>
+            <h5 class="card-subtitle"><i class="fas fa-rupee-sign"></i>{{prod.price}}</h5>
+            <span class="card-text">{{prod.description}}</span><br>
+            <span class="card-text" ng-if="prod.publishDate">Available from {{prod.publishDate}}, </span>
+            <span class="card-text" ng-if="prod.expiryDate">Expires on {{prod.expiryDate}}</span><br><br>
+            <button class="btn btn-primary" ng-click="markAsSold(prod.id)">Mark As Sold</button>
+          </div>
+         </div>
+         <div class="col-sm-6 col-md-6 col-lg-6">
+            <img src="{{prod.images[0]}}" class="card-img-bottom">
+         </div>
+        </div> 
+        
+      </div>
+
+    <h3 ng-show="soldHistory.length">Your Sold Products:</h3>
+    <div ng-repeat="prod in soldHistory" class="card">
+        <div class="row">
+         <div class="col-sm-6 col-md-6 col-lg-6">
+          <div class="card-block">
+            <h3 class="card-title">{{prod.title}}</h3>
+            <h5 class="card-subtitle"><i class="fas fa-rupee-sign"></i>{{prod.price}}</h5>
+            <span class="card-text">{{prod.description}}</span><br>
+            <span class="card-text" ng-if="prod.publishDate">Available from {{prod.publishDate}}, </span>
+            <span class="card-text" ng-if="prod.expiryDate">Expires on {{prod.expiryDate}}</span><br><br>
+          </div>
+         </div>
+         <div class="col-sm-6 col-md-6 col-lg-6">
+            <img src="{{prod.images[0]}}" class="card-img-bottom">
+         </div>
+        </div> 
+        
+      </div>
+
+    <h3 ng-show="wishlist.length">Purchase History:</h3>
+    <div ng-repeat="prod in wishlist" class="card">
+        <div class="row">
+         <div class="col-sm-6 col-md-6 col-lg-6">
+          <div class="card-block">
+            <h3 class="card-title">{{prod.title}}</h3>
+            <h5 class="card-subtitle"><i class="fas fa-rupee-sign"></i>{{prod.price}}</h5>
+            <span class="card-text">{{prod.description}}</span><br>
+            <span class="card-text" ng-if="prod.publishDate">Available from {{prod.publishDate}}, </span>
+            <span class="card-text" ng-if="prod.expiryDate">Expires on {{prod.expiryDate}}</span><br><br>
+          </div>
+         </div>
+         <div class="col-sm-6 col-md-6 col-lg-6">
+            <img src="{{prod.images[0]}}" class="card-img-bottom">
+         </div>
+        </div> 
+        
+      </div>
 </div>
 
 <form ng-submit="logIn()" ng-hide="isValidUser">

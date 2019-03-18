@@ -13,6 +13,7 @@ public class Product implements Serializable {
 	private String seller;
 	private int price;
 	private String category;
+	private String status;
 	private String publishDate;
 	private String expiryDate;
 	private List<String> images;
@@ -52,6 +53,12 @@ public class Product implements Serializable {
 	}
 	public void setCategory(String category) {
 		this.category = category;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
 	}
 	public String getPublishDate() {
 		return publishDate;
