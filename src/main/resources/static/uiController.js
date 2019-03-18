@@ -24,6 +24,7 @@ app.controller('homeController', function($scope, $http, $location, $route) {
         });
     }
 
+    $scope.action = 'buy';
     $scope.isValidUser = false;
 
     $scope.username = '';
@@ -81,13 +82,22 @@ app.controller('homeController', function($scope, $http, $location, $route) {
     $scope.price = '';
     $scope.category = '';
     $scope.expiryDate = '';
+    $scope.images = [];
+
     $scope.addProduct = function() {
+        $scope.publishDate = new Date().toString();
+        $scope.publishDate = $scope.publishDate.slice(0, $scope.publishDate.lastIndexOf(':'));
+        $scope.images = $scope.images.split(',');
+
         $http.post('/addProduct', {
             title : $scope.title,
             description : $scope.description,
             price : $scope.price,
             category : $scope.category,
-            expiryDate : $scope.expiryDate
+            expiryDate : $scope.expiryDate,
+            seller : $scope.username,
+            publishDate : $scope.publishDate,
+            images : $scope.images
         })
         .then(function(response) {
             if(response.data === true) {
@@ -104,6 +114,22 @@ app.controller('homeController', function($scope, $http, $location, $route) {
         },
         function(response) {
             alert(response.data.message);
+        });
+    };
+
+    $scope.buyProduct = function(productId) {
+        var uname = '';
+        for(var i in $scope.products) {
+            if($scope.products[i].id === productId) {
+                uname = $scope.products[i].seller;
+                break;
+            }
+        }
+
+        $http.get('/getUser?username=' + uname)
+        .then(function(response) {
+            alert('Please contact ' + response.data.name 
+            + ' at email ' + response.data.email + ' or phone ' + response.data.phone);
         });
     };
 });

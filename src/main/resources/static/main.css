@@ -1,0 +1,39 @@
+img {
+    max-width: 200px;
+    height: auto;
+}
+
+.card {
+    width: 80%;
+    margin: 0 auto 10px auto;
+    background-color: black;
+    color: white;
+}
+
+.card-block {
+    padding-left: 10px;
+}
+
+.menu-items {
+    margin-bottom: 10px;
+}
+
+.selected {
+    background-color: black;
+}
+
+.btn:hover {
+    color: none;
+}
+
+.selected button {
+    color: white !important;
+}
+
+.btn:focus {
+    box-shadow: none;
+}
+
+body {
+    background-color: lightgray;
+}
