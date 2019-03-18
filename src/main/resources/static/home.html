@@ -1,17 +1,5 @@
 <div ng-controller="homeController">
 
-<!--<ul class="nav nav-tabs" id="myTab" role="tablist">
-  <li class="nav-item">
-    <a class="nav-link active" id="buy-nav" data-toggle="tab" ng-href="#buyTab" role="tab" aria-controls="buyTab" aria-selected="true">Buy</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" id="sell-nav" data-toggle="tab" ng-href="#sellTab" role="tab" aria-controls="sellTab" aria-selected="false">Sell</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" id="account-nav" data-toggle="tab" ng-href="#accountTab" role="tab" aria-controls="accountTab" aria-selected="false">My Account</a>
-  </li>
-</ul>-->
-
 <div class="row menu-items" ng-show="isValidUser">
     <div class="col-sm-1 col-md-1 col-lg-1 {{action==='buy'?'selected':''}}">
         <button class="btn" ng-click="action='buy'">Buy</button>
@@ -21,6 +9,10 @@
     </div>
     <div class="col-sm-2 col-md-2 col-lg-2 {{action==='myAccount'?'selected':''}}">
         <button class="btn" ng-click="action='myAccount'">My Account</button>
+    </div>
+    <div class="col-sm-8 col-md-8 col-lg-8 text-right">
+        Welcome {{username}}!
+        <button class="btn btn-sm btn-secondary" ng-click="logOut()">Log out</button>
     </div>
 </div>
 
@@ -33,7 +25,8 @@
          <div class="col-sm-6 col-md-6 col-lg-6">
           <div class="card-block">
             <h3 class="card-title">{{prod.title}}</h3>
-            <h5 class="card-subtitle"><i class="fas fa-rupee-sign"></i>{{prod.price}}</h5>
+            <h5 class="card-subtitle">{{prod.price}}/-</h5>
+            <i class="card-text">{{prod.category}}</i><br>
             <span class="card-text">{{prod.description}}</span><br>
             <span class="card-text" ng-if="prod.publishDate">Available from {{prod.publishDate}}, </span>
             <span class="card-text" ng-if="prod.expiryDate">Expires on {{prod.expiryDate}}</span><br><br>
@@ -41,7 +34,7 @@
           </div>
          </div>
          <div class="col-sm-6 col-md-6 col-lg-6">
-            <img src="{{prod.images[0]}}" class="card-img-bottom">
+            <img ng-repeat="image in prod.images" src="{{image}}" class="card-img-bottom">
          </div>
         </div> 
         
@@ -49,33 +42,17 @@
 </div>
 
 <div ng-show="isValidUser && action==='sell'">
-<form ng-submit="addProduct()">
-  <div class="form-group">
-    <label for="title">Title</label>
-    <input type="text" ng-model="title" class="form-control" id="title">
-  </div>
-  <div class="form-group">
-    <label for="description">Description</label>
-    <input type="text" ng-model="description" class="form-control" id="description">
-  </div>
-  <div class="form-group">
-    <label for="price">Price</label>
-    <input type="text" ng-model="price" class="form-control" id="price">
-  </div>
-  <div class="form-group">
-    <label for="category">Category</label>
-    <input type="text" ng-model="category" class="form-control" id="category">
-  </div>
-  <div class="form-group">
-    <label for="expiryDate">Expiry Date</label>
-    <input type="text" ng-model="expiryDate" class="form-control" id="expiryDate">
-  </div>
-  <div class="form-group">
-    <label for="images">Image files (comma separated)</label>
-    <input type="text" ng-model="images" class="form-control" id="images">
-  </div>
+<form ng-submit="addProduct()" name="addProductForm">
+  <h3>Give product details</h3>
 
-  <button type="submit" class="btn btn-primary">Submit</button>
+  <input type="text" ng-model="title" class="form-control" id="title" placeholder="Title" required>
+  <input type="text" ng-model="description" class="form-control" id="description" placeholder="Description">
+  <input type="text" ng-model="price" class="form-control" id="price" placeholder="Price">
+  <input type="text" ng-model="category" class="form-control" id="category" placeholder="Category">
+  <input type="text" ng-model="expiryDate" class="form-control" id="expiryDate" placeholder="Expiry Date">
+  <input type="text" ng-model="images" class="form-control" id="images" placeholder="Image files (comma separated)">
+
+  <button type="submit" class="btn btn-primary" ng-disabled="!addProductForm.$valid">Submit</button>
 </form>
 </div>
 
@@ -86,7 +63,8 @@
          <div class="col-sm-6 col-md-6 col-lg-6">
           <div class="card-block">
             <h3 class="card-title">{{prod.title}}</h3>
-            <h5 class="card-subtitle"><i class="fas fa-rupee-sign"></i>{{prod.price}}</h5>
+            <h5 class="card-subtitle">{{prod.price}}/-</h5>
+            <i class="card-text">{{prod.category}}</i><br>
             <span class="card-text">{{prod.description}}</span><br>
             <span class="card-text" ng-if="prod.publishDate">Available from {{prod.publishDate}}, </span>
             <span class="card-text" ng-if="prod.expiryDate">Expires on {{prod.expiryDate}}</span><br><br>
@@ -94,7 +72,7 @@
           </div>
          </div>
          <div class="col-sm-6 col-md-6 col-lg-6">
-            <img src="{{prod.images[0]}}" class="card-img-bottom">
+            <img ng-repeat="image in prod.images" src="{{image}}" class="card-img-bottom">
          </div>
         </div> 
         
@@ -106,14 +84,15 @@
          <div class="col-sm-6 col-md-6 col-lg-6">
           <div class="card-block">
             <h3 class="card-title">{{prod.title}}</h3>
-            <h5 class="card-subtitle"><i class="fas fa-rupee-sign"></i>{{prod.price}}</h5>
+            <h5 class="card-subtitle">{{prod.price}}/-</h5>
+            <i class="card-text">{{prod.category}}</i><br>
             <span class="card-text">{{prod.description}}</span><br>
             <span class="card-text" ng-if="prod.publishDate">Available from {{prod.publishDate}}, </span>
             <span class="card-text" ng-if="prod.expiryDate">Expires on {{prod.expiryDate}}</span><br><br>
           </div>
          </div>
          <div class="col-sm-6 col-md-6 col-lg-6">
-            <img src="{{prod.images[0]}}" class="card-img-bottom">
+            <img ng-repeat="image in prod.images" src="{{image}}" class="card-img-bottom">
          </div>
         </div> 
         
@@ -125,154 +104,46 @@
          <div class="col-sm-6 col-md-6 col-lg-6">
           <div class="card-block">
             <h3 class="card-title">{{prod.title}}</h3>
-            <h5 class="card-subtitle"><i class="fas fa-rupee-sign"></i>{{prod.price}}</h5>
+            <h5 class="card-subtitle">{{prod.price}}/-</h5>
+            <i class="card-text">{{prod.category}}</i><br>
             <span class="card-text">{{prod.description}}</span><br>
             <span class="card-text" ng-if="prod.publishDate">Available from {{prod.publishDate}}, </span>
             <span class="card-text" ng-if="prod.expiryDate">Expires on {{prod.expiryDate}}</span><br><br>
           </div>
          </div>
          <div class="col-sm-6 col-md-6 col-lg-6">
-            <img src="{{prod.images[0]}}" class="card-img-bottom">
+            <img ng-repeat="image in prod.images" src="{{image}}" class="card-img-bottom">
          </div>
         </div> 
         
       </div>
 </div>
 
-<form ng-submit="logIn()" ng-hide="isValidUser">
-  <div class="form-group">
-    <label for="logInUsername">Username</label>
-    <input type="text" ng-model="username" class="form-control" id="logInUsername" aria-describedby="usernameHelp">
+<form ng-submit="logIn()" ng-hide="isValidUser" id="logInForm">
+ <div class="row">
+  <div class="col">
+    <input type="text" ng-model="username" class="form-control" id="logInUsername" placeholder="Username" aria-describedby="usernameHelp">
   </div>
-  <div class="form-group">
-    <label for="logInPassword">Password</label>
-    <input type="password" ng-model="password" class="form-control" id="logInPassword">
+  <div class="col">
+    <input type="password" ng-model="password" class="form-control" id="logInPassword" placeholder="Password">
   </div>
-  <button type="submit" class="btn btn-primary">Log in</button>
+  <div class="col">
+    <button type="submit" class="btn btn-primary">Log in</button>
+  </div>
+ </div>
 </form>
 
-<form ng-submit="signUp()" ng-hide="isValidUser">
-  <div class="form-group">
-    <label for="signUpName">Name</label>
-    <input type="text" ng-model="signUpName" class="form-control" id="signUpName">
-  </div>
-  <div class="form-group">
-    <label for="signUpEmail">E-mail</label>
-    <input type="email" ng-model="signUpEmail" class="form-control" id="signUpEmail">
-  </div>
-  <div class="form-group">
-    <label for="signUpPhone">Phone</label>
-    <input type="text" ng-model="signUpPhone" class="form-control" id="signUpPhone">
-  </div>
-  <div class="form-group">
-    <label for="signUpAddress">Address</label>
-    <input type="text" ng-model="signUpAddress" class="form-control" id="signUpAddress">
-  </div>
-  <div class="form-group">
-    <label for="signUpUsername">Username</label>
-    <input type="text" ng-model="signUpUsername" class="form-control" id="signUpUsername">
-  </div>
-  <div class="form-group">
-    <label for="signUpPassword">Choose Password</label>
-    <input type="password" ng-model="signUpPassword" class="form-control" id="signUpPassword">
-  </div>
-  <div class="form-group">
-    <label for="signUpPasswordCnf">Confirm Password</label>
-    <input type="password" ng-model="signUpPasswordCnf" class="form-control" id="signUpPasswordCnf">
-  </div>
-  <button type="submit" class="btn btn-primary" ng-disabled="signUpPassword!=signUpPasswordCnf">Sign up</button>
+<form ng-submit="signUp()" ng-hide="isValidUser" name="signUpForm">
+  <hr>
+  <h3>Create new account</h3>
+
+  <input type="text" ng-model="signUpName" class="form-control" id="signUpName" placeholder="Name" required>
+  <input type="email" ng-model="signUpEmail" class="form-control" id="signUpEmail" placeholder="E-mail">
+  <input type="text" ng-model="signUpPhone" class="form-control" id="signUpPhone" placeholder="Phone">
+  <input type="text" ng-model="signUpAddress" class="form-control" id="signUpAddress" placeholder="Address">
+  <input type="text" ng-model="signUpUsername" class="form-control" id="signUpUsername" placeholder="Username" required>
+  <input type="password" ng-model="signUpPassword" class="form-control" id="signUpPassword" placeholder="Choose Password" required>
+  <input type="password" ng-model="signUpPasswordCnf" class="form-control" id="signUpPasswordCnf" placeholder="Confirm Password">
+
+  <button type="submit" class="btn btn-primary" ng-disabled="signUpPassword!=signUpPasswordCnf || !signUpForm.$valid">Sign up</button>
 </form>
-
-<!--<div class="tab-content" id="myTabContent">
-  <div class="tab-pane fade show active" id="buyTab" role="tabpanel" aria-labelledby="buyTab">
-      <div class="spinner-border" role="status" ng-hide="productsLoaded">
-        <span class="sr-only">Loading...</span>
-      </div>
-      <div ng-show="productsLoaded" ng-repeat="prod in products">
-          <h3>{{prod.title}}</h3>
-          <p>{{prod.description}}</p>
-          <p>{{prod.price}}</p>
-          <small>Expires on {{prod.expiryDate}}</small>
-          <hr>
-      </div>
-      
-  </div>
-  <div class="tab-pane fade" id="sellTab" role="tabpanel" aria-labelledby="sellTab">
-
-<form ng-submit="addProduct()">
-  <div class="form-group">
-    <label for="title">Title</label>
-    <input type="text" ng-model="title" class="form-control" id="title">
-  </div>
-  <div class="form-group">
-    <label for="description">Description</label>
-    <input type="text" ng-model="description" class="form-control" id="description">
-  </div>
-  <div class="form-group">
-    <label for="price">Price</label>
-    <input type="text" ng-model="price" class="form-control" id="price">
-  </div>
-  <div class="form-group">
-    <label for="category">Category</label>
-    <input type="text" ng-model="category" class="form-control" id="category">
-  </div>
-  <div class="form-group">
-    <label for="expiryDate">Expiry Date</label>
-    <input type="text" ng-model="expiryDate" class="form-control" id="expiryDate">
-  </div>
-
-  <button type="submit" class="btn btn-primary">Submit</button>
-  <div style="height:1000cm"></div>
-</form>
-
-  </div>
-  <div class="tab-pane fade" id="accountTab" role="tabpanel" aria-labelledby="accountTab" style="height:1000cm">Work In Progress!!</div>
-</div>
-
-
-<form ng-submit="logIn()" ng-hide="isValidUser">
-  <div class="form-group">
-    <label for="logInUsername">Username</label>
-    <input type="text" ng-model="username" class="form-control" id="logInUsername" aria-describedby="usernameHelp">
-  </div>
-  <div class="form-group">
-    <label for="logInPassword">Password</label>
-    <input type="password" ng-model="password" class="form-control" id="logInPassword">
-  </div>
-  <button type="submit" class="btn btn-primary">Log in</button>
-</form>
-
-<form ng-submit="signUp()" ng-hide="isValidUser">
-  <div class="form-group">
-    <label for="signUpName">Name</label>
-    <input type="text" ng-model="signUpName" class="form-control" id="signUpName">
-  </div>
-  <div class="form-group">
-    <label for="signUpEmail">E-mail</label>
-    <input type="email" ng-model="signUpEmail" class="form-control" id="signUpEmail">
-  </div>
-  <div class="form-group">
-    <label for="signUpPhone">Phone</label>
-    <input type="text" ng-model="signUpPhone" class="form-control" id="signUpPhone">
-  </div>
-  <div class="form-group">
-    <label for="signUpAddress">Address</label>
-    <input type="text" ng-model="signUpAddress" class="form-control" id="signUpAddress">
-  </div>
-  <div class="form-group">
-    <label for="signUpUsername">Username</label>
-    <input type="text" ng-model="signUpUsername" class="form-control" id="signUpUsername">
-  </div>
-  <div class="form-group">
-    <label for="signUpPassword">Choose Password</label>
-    <input type="password" ng-model="signUpPassword" class="form-control" id="signUpPassword">
-  </div>
-  <div class="form-group">
-    <label for="signUpPasswordCnf">Confirm Password</label>
-    <input type="password" ng-model="signUpPasswordCnf" class="form-control" id="signUpPasswordCnf">
-  </div>
-  <button type="submit" class="btn btn-primary" ng-disabled="signUpPassword!=signUpPasswordCnf">Sign up</button>
-</form>
-
-</div>-->
-

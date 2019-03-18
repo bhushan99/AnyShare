@@ -16,6 +16,7 @@ img {
 
 .menu-items {
     margin-bottom: 10px;
+    max-width: 100%;
 }
 
 .selected {
@@ -36,4 +37,21 @@ img {
 
 body {
     background-color: lightgray;
+}
+
+form {
+    width: 80%;
+    margin: 20px auto 20px auto;
+}
+
+form input {
+    margin-bottom: 10px;
+}
+
+header {
+    text-align:center; 
+    font-size:30px; 
+    color:white; 
+    background-color:purple; 
+    margin-bottom:20px;
 }

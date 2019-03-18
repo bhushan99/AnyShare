@@ -10,7 +10,7 @@ app.config(function($routeProvider) {
 });
 
 app.controller('mainController', function($scope) {
-    $scope.appName = 'AnyShare';
+    $scope.appName = 'AnyShare!';
 });
 
 app.controller('homeController', function($scope, $http, $location, $route) {
@@ -108,6 +108,7 @@ app.controller('homeController', function($scope, $http, $location, $route) {
         .then(function(response) {
             if(response.data === true) {
                 $scope.isValidUser = true;
+                $scope.username = $scope.signUpUsername;
                 loadProducts();
                 loadWishlist();
             }
@@ -134,7 +135,7 @@ app.controller('homeController', function($scope, $http, $location, $route) {
         $http.post('/addProduct', {
             title : $scope.title,
             description : $scope.description,
-            price : $scope.price,
+            price : ($scope.price ? Number($scope.price) : 0),
             category : $scope.category,
             expiryDate : $scope.expiryDate,
             seller : $scope.username,
@@ -190,6 +191,10 @@ app.controller('homeController', function($scope, $http, $location, $route) {
                 alert('Product marked as sold!');
             }
         });
+    };
+
+    $scope.logOut = function() {
+        window.location.reload();
     };
 });
 
