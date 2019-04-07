@@ -44,8 +44,12 @@ form {
     margin: 20px auto 20px auto;
 }
 
-form input {
+form input, form select {
     margin-bottom: 10px;
+}
+
+.userInfo {
+	margin-left: 10px;
 }
 
 header {

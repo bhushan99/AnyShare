@@ -39,7 +39,7 @@ public class WebController {
 	
 	@RequestMapping(value = "/validateUser", method = RequestMethod.POST)
 	public @ResponseBody boolean validateUser(@RequestBody User user) {
-		return FileOperations.getUser(user.getUsername()) != null;
+		return FileOperations.getUser(user.getUsername(), user.getPassword()) != null;
 	}
 	
 	@RequestMapping(value = "/addUser", method = RequestMethod.POST)

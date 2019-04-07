@@ -156,6 +156,18 @@ public class FileOperations {
 		return writeFile(Constants.userDataPrefix + u.getUsername() + Constants.serializedFileExt, u);
 	}
 	
+	public static User getUser(String username, String password) {
+		Object ob = readFile(Constants.userDataPrefix + username + Constants.serializedFileExt);
+		if(ob == null) {
+			return null;
+		}
+		
+		User u = (User)ob;
+		if(u.getPassword().equals(password))
+			return u;
+		return null;
+	}
+	
 	public static User getUser(String username) {
 		Object ob = readFile(Constants.userDataPrefix + username + Constants.serializedFileExt);
 		if(ob == null) {

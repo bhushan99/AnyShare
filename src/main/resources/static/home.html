@@ -17,18 +17,48 @@
 </div>
 
 <div ng-show="isValidUser && action==='buy'">
+
+<div class="row">
+	<div class="col-sm-2 col-md-2 col-lg-2">
+        <label>Filter Categories:</label>
+    </div>
+    <div class="col-sm-1 col-md-1 col-lg-1">
+   		<input type="checkbox" ng-model="selectedCategories['Food Cooked']">
+        <label>Food Cooked</label>
+    </div>
+    <div class="col-sm-1 col-md-1 col-lg-1">
+   		<input type="checkbox" ng-model="selectedCategories['Food Uncooked']">
+        <label>Food Uncooked</label>
+    </div>
+    <div class="col-sm-1 col-md-1 col-lg-1">
+   		<input type="checkbox" ng-model="selectedCategories['Groceries']">
+        <label>Groceries</label>
+    </div>
+    <div class="col-sm-1 col-md-1 col-lg-1">
+   		<input type="checkbox" ng-model="selectedCategories['Books/Notes']">
+        <label>Books/Notes</label>
+    </div>
+    <div class="col-sm-1 col-md-1 col-lg-1">
+   		<input type="checkbox" ng-model="selectedCategories['Miscellaneous']">
+        <label>Miscellaneous</label>
+    </div>
+</div>
+
+
       <div class="spinner-border" role="status" ng-hide="productsLoaded">
         <span class="sr-only">Loading...</span>
       </div>
-      <div ng-show="productsLoaded" ng-repeat="prod in productsUnsold" class="card">
+      <div ng-show="productsLoaded && isSelected(prod.category)" ng-repeat="prod in productsUnsold" class="card">
         <div class="row">
          <div class="col-sm-6 col-md-6 col-lg-6">
           <div class="card-block">
             <h3 class="card-title">{{prod.title}}</h3>
-            <h5 class="card-subtitle">{{prod.price}}/-</h5>
-            <i class="card-text">{{prod.category}}</i><br>
+            <h5 ng-show="prod.price > 0" class="card-subtitle">Rs. {{prod.price}}/-</h5>
+            <h5 ng-show="prod.price == 0" class="card-subtitle" style="color:green">Free!</h5>
+            <span ng-show="prod.category">
+            	<i class="card-text">{{prod.category}}</i><br>
+            </span>
             <span class="card-text">{{prod.description}}</span><br>
-            <span class="card-text" ng-if="prod.publishDate">Available from {{prod.publishDate}}, </span>
             <span class="card-text" ng-if="prod.expiryDate">Expires on {{prod.expiryDate}}</span><br><br>
             <button class="btn btn-primary" ng-click="buyProduct(prod.id)">Buy</button>
           </div>
@@ -48,25 +78,122 @@
   <input type="text" ng-model="title" class="form-control" id="title" placeholder="Title" required>
   <input type="text" ng-model="description" class="form-control" id="description" placeholder="Description">
   <input type="text" ng-model="price" class="form-control" id="price" placeholder="Price">
-  <input type="text" ng-model="category" class="form-control" id="category" placeholder="Category">
-  <input type="text" ng-model="expiryDate" class="form-control" id="expiryDate" placeholder="Expiry Date">
+  <select class="form-control" id="category" ng-model="category">
+  	<option selected value="">Category</option>
+  	<option value="Food Cooked">Food Cooked</option>
+  	<option value="Food Uncooked">Food Uncooked</option>
+  	<option value="Groceries">Groceries</option>
+  	<option value="Books/Notes">Books/Notes</option>
+  	<option value="Miscellaneous">Miscellaneous</option>
+  </select>
+  
   <input type="text" ng-model="images" class="form-control" id="images" placeholder="Image files (comma separated)">
-
+  <div class="form-group row">
+    <label for="expiryDate" class="col-sm-1 col-md-1 col-lg-1 col-form-label">Expiry Date</label>
+    <div class="col-sm-11 col-md-11 col-lg-11">
+      <input type="date" class="form-control" ng-model="expiryDate" id="expiryDate" required>
+    </div>
+  </div>
   <button type="submit" class="btn btn-primary" ng-disabled="!addProductForm.$valid">Submit</button>
 </form>
 </div>
 
 <div ng-show="isValidUser && action==='myAccount'">
+	<h3>User Details:</h3>
+	<div class="row userInfo">
+		<label class="col-sm-2 col-md-2 col-lg-2">Name:</label>
+		<label class="col-sm-10 col-md-10 col-lg-10">{{user.name}}</label>
+	</div>
+	<div class="row userInfo">
+		<label class="col-sm-2 col-md-2 col-lg-2">Username:</label>
+		<label class="col-sm-10 col-md-10 col-lg-10">{{user.username}}</label>
+	</div>
+	<div class="row userInfo">
+		<label class="col-sm-2 col-md-2 col-lg-2">Email:</label>
+		<label class="col-sm-10 col-md-10 col-lg-10">{{user.email}}</label>
+	</div>
+	<div class="row userInfo">
+		<label class="col-sm-2 col-md-2 col-lg-2">Phone:</label>
+		<label class="col-sm-10 col-md-10 col-lg-10">{{user.phone}}</label>
+	</div>
+	<div class="row userInfo">
+		<label class="col-sm-2 col-md-2 col-lg-2">Address:</label>
+		<label class="col-sm-10 col-md-10 col-lg-10">{{user.address}}</label>
+	</div>
+	<div class="row userInfo">
+		<button class="btn btn-info col-sm-2 col-md-2 col-lg-2" data-toggle="modal" data-target="#updatePassword" style="margin:10px">Update Password</button>
+		<button class="btn btn-info col-sm-2 col-md-2 col-lg-2" data-toggle="modal" data-target="#updateContact" style="margin:10px">Update Contact Info</button>
+	</div>
+	<hr>
+	
+	<div class="modal fade" id="updatePassword" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h2 class="modal-title">Update Password</h2>
+				</div>
+				<div class="modal-body">
+					<form ng-submit="updatePassword()" name="updatePasswordForm">
+						<div class="form-group row">
+							<label class="col-sm-6 col-md-6 col-lg-6" for="currPass">Current Password:</label>
+							<input type="password" class="col-sm-6 col-md-6 col-lg-6" id="currPass" ng-model="currPass" required>
+						</div>
+						<div class="form-group row">
+							<label class="col-sm-6 col-md-6 col-lg-6" for="userpassword">New Password:</label>
+							<input type="password" class="col-sm-6 col-md-6 col-lg-6" id="userpassword" ng-model="userpassword" required>
+						</div>
+						<div class="form-group row">
+							<label class="col-sm-6 col-md-6 col-lg-6" for="cnfNewPass">Confirm New Password:</label>
+							<input type="password" class="col-sm-6 col-md-6 col-lg-6" id="cnfNewPass" ng-model="cnfNewPass" required>
+						</div>
+						<button class="btn btn-primary" type="submit" 
+							ng-disabled="userpassword!=cnfNewPass || !updatePasswordForm.$valid">Submit</button>
+						<button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="modal fade" id="updateContact" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h2 class="modal-title">Update Contact Details</h2>
+				</div>
+				<div class="modal-body">
+					<form ng-submit="updateContact()" name="updateContactForm">
+						<div class="form-group row">
+							<label class="col-sm-6 col-md-6 col-lg-6" for="useremail">Email:</label>
+							<input type="email" class="col-sm-6 col-md-6 col-lg-6" id="useremail" ng-model="useremail" required>
+						</div>
+						<div class="form-group row">
+							<label class="col-sm-6 col-md-6 col-lg-6" for="userphone">Phone:</label>
+							<input type="text" class="col-sm-6 col-md-6 col-lg-6" id="userphone" ng-model="userphone" required>
+						</div>
+						<div class="form-group row">
+							<label class="col-sm-6 col-md-6 col-lg-6" for="useraddress">Address:</label>
+							<input type="text" class="col-sm-6 col-md-6 col-lg-6" id="useraddress" ng-model="useraddress" required>
+						</div>
+						<button class="btn btn-primary" type="submit"
+							ng-disabled="!updateContactForm.$valid">Submit</button>
+						<button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	
     <h3 ng-show="unsoldHistory.length">Your Unsold Products:</h3>
     <div ng-repeat="prod in unsoldHistory" class="card">
         <div class="row">
          <div class="col-sm-6 col-md-6 col-lg-6">
           <div class="card-block">
             <h3 class="card-title">{{prod.title}}</h3>
-            <h5 class="card-subtitle">{{prod.price}}/-</h5>
+            <h5 ng-show="prod.price > 0" class="card-subtitle">Rs. {{prod.price}}/-</h5>
+            <h5 ng-show="prod.price == 0" class="card-subtitle" style="color:green">Free!</h5>
             <i class="card-text">{{prod.category}}</i><br>
             <span class="card-text">{{prod.description}}</span><br>
-            <span class="card-text" ng-if="prod.publishDate">Available from {{prod.publishDate}}, </span>
             <span class="card-text" ng-if="prod.expiryDate">Expires on {{prod.expiryDate}}</span><br><br>
             <button class="btn btn-primary" ng-click="markAsSold(prod.id)">Mark As Sold</button>
           </div>
@@ -84,10 +211,10 @@
          <div class="col-sm-6 col-md-6 col-lg-6">
           <div class="card-block">
             <h3 class="card-title">{{prod.title}}</h3>
-            <h5 class="card-subtitle">{{prod.price}}/-</h5>
+            <h5 ng-show="prod.price > 0" class="card-subtitle">Rs. {{prod.price}}/-</h5>
+            <h5 ng-show="prod.price == 0" class="card-subtitle" style="color:green">Free!</h5>
             <i class="card-text">{{prod.category}}</i><br>
             <span class="card-text">{{prod.description}}</span><br>
-            <span class="card-text" ng-if="prod.publishDate">Available from {{prod.publishDate}}, </span>
             <span class="card-text" ng-if="prod.expiryDate">Expires on {{prod.expiryDate}}</span><br><br>
           </div>
          </div>
@@ -104,10 +231,10 @@
          <div class="col-sm-6 col-md-6 col-lg-6">
           <div class="card-block">
             <h3 class="card-title">{{prod.title}}</h3>
-            <h5 class="card-subtitle">{{prod.price}}/-</h5>
+            <h5 ng-show="prod.price > 0" class="card-subtitle">Rs. {{prod.price}}/-</h5>
+            <h5 ng-show="prod.price == 0" class="card-subtitle" style="color:green">Free!</h5>
             <i class="card-text">{{prod.category}}</i><br>
             <span class="card-text">{{prod.description}}</span><br>
-            <span class="card-text" ng-if="prod.publishDate">Available from {{prod.publishDate}}, </span>
             <span class="card-text" ng-if="prod.expiryDate">Expires on {{prod.expiryDate}}</span><br><br>
           </div>
          </div>
@@ -138,9 +265,9 @@
   <h3>Create new account</h3>
 
   <input type="text" ng-model="signUpName" class="form-control" id="signUpName" placeholder="Name" required>
-  <input type="email" ng-model="signUpEmail" class="form-control" id="signUpEmail" placeholder="E-mail">
-  <input type="text" ng-model="signUpPhone" class="form-control" id="signUpPhone" placeholder="Phone">
-  <input type="text" ng-model="signUpAddress" class="form-control" id="signUpAddress" placeholder="Address">
+  <input type="email" ng-model="signUpEmail" class="form-control" id="signUpEmail" placeholder="E-mail" required>
+  <input type="text" ng-model="signUpPhone" class="form-control" id="signUpPhone" placeholder="Phone" required>
+  <input type="text" ng-model="signUpAddress" class="form-control" id="signUpAddress" placeholder="Address" required>
   <input type="text" ng-model="signUpUsername" class="form-control" id="signUpUsername" placeholder="Username" required>
   <input type="password" ng-model="signUpPassword" class="form-control" id="signUpPassword" placeholder="Choose Password" required>
   <input type="password" ng-model="signUpPasswordCnf" class="form-control" id="signUpPasswordCnf" placeholder="Confirm Password">

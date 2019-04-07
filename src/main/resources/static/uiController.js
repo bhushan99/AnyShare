@@ -29,9 +29,10 @@ app.controller('homeController', function($scope, $http, $location, $route) {
 
     function fillUnsoldProducts() {
         $scope.productsUnsold = [];
+        var todayDate = new Date();
         for(var i in $scope.products) {
-            if($scope.products[i].status === 'UNSOLD') {
-                $scope.productsUnsold.push($scope.products[i]);
+            if($scope.products[i].status === 'UNSOLD' && todayDate < new Date($scope.products[i].expiryDate)) {
+            	$scope.productsUnsold.push($scope.products[i]);
             }
         }
     }
@@ -70,7 +71,20 @@ app.controller('homeController', function($scope, $http, $location, $route) {
 
     $scope.username = '';
     $scope.password = '';
-
+    $scope.user = {};
+    $scope.selectedCategories = {
+    		"Food Cooked": true,
+    	  	"Food Uncooked": true,
+    	  	"Groceries": true,
+    	  	"Books/Notes": true,
+    	  	"Miscellaneous": true,
+    	  	"": true
+    };
+    
+    $scope.isSelected = function(category) {
+    	return $scope.selectedCategories[category];
+    };
+    
     $scope.logIn = function() {
         $http.post('/validateUser', {
             username : $scope.username,
@@ -81,6 +95,13 @@ app.controller('homeController', function($scope, $http, $location, $route) {
                 $scope.isValidUser = true;
                 loadProducts();
                 loadWishlist();
+                $http.get('/getUser?username=' + $scope.username)
+                .then(function(response) {
+                	$scope.user = response.data;
+                	$scope.useraddress = $scope.user.address;
+                	$scope.userphone = $scope.user.phone;
+                	$scope.useremail = $scope.user.email;
+                });
             }
             else {
                 alert('Invalid credentials!');
@@ -111,6 +132,13 @@ app.controller('homeController', function($scope, $http, $location, $route) {
                 $scope.username = $scope.signUpUsername;
                 loadProducts();
                 loadWishlist();
+                $http.get('/getUser?username=' + $scope.username)
+                .then(function(response) {
+                	$scope.user = response.data;
+                	$scope.useraddress = $scope.user.address;
+                	$scope.userphone = $scope.user.phone;
+                	$scope.useremail = $scope.user.email;
+                });
             }
             else {
                 alert('Could not sign up!');
@@ -127,17 +155,28 @@ app.controller('homeController', function($scope, $http, $location, $route) {
     $scope.category = '';
     $scope.expiryDate = '';
     $scope.images = '';
+    $scope.monthNames = [
+        "January", "February", "March",
+        "April", "May", "June", "July",
+        "August", "September", "October",
+        "November", "December"
+    ];
 
     $scope.addProduct = function() {
         $scope.publishDate = new Date().toString();
         $scope.publishDate = $scope.publishDate.slice(0, $scope.publishDate.lastIndexOf(':'));
-
+   
+        if(new Date() > new Date($scope.expiryDate.getDate() + '-' + $scope.monthNames[$scope.expiryDate.getMonth()] + '-' + $scope.expiryDate.getFullYear())) {
+        	alert('Please provide future date for expiry!');
+        	return;
+        }
+        
         $http.post('/addProduct', {
             title : $scope.title,
             description : $scope.description,
             price : ($scope.price ? Number($scope.price) : 0),
             category : $scope.category,
-            expiryDate : $scope.expiryDate,
+            expiryDate : $scope.expiryDate.getDate() + '-' + $scope.monthNames[$scope.expiryDate.getMonth()] + '-' + $scope.expiryDate.getFullYear(),
             seller : $scope.username,
             publishDate : $scope.publishDate,
             images : $scope.images.split(',')
@@ -191,6 +230,64 @@ app.controller('homeController', function($scope, $http, $location, $route) {
                 alert('Product marked as sold!');
             }
         });
+    };
+    
+    $scope.updatePassword = function() {
+    	if($scope.currPass != $scope.user.password) {
+    		alert("Current password is incorrect!");
+    		return;
+    	}
+    	
+    	$scope.user.password = $scope.userpassword;
+    	$http.post('/addUser', $scope.user)
+        .then(function(response) {
+            if(response.data === true) {
+            	alert("Password updated successfully!");
+            }
+            else {
+                alert('Could not update password!');
+            }
+            $http.get('/getUser?username=' + $scope.username)
+            .then(function(response) {
+            	$scope.user = response.data;
+            	$scope.useraddress = $scope.user.address;
+            	$scope.userphone = $scope.user.phone;
+            	$scope.useremail = $scope.user.email;
+            });
+        },
+        function(response) {
+            alert(response.data.message);
+        });
+    	
+    	$("#updatePassword").modal('hide');
+    };
+    
+    $scope.updateContact = function() {
+    	$scope.user.email = $scope.useremail;
+    	$scope.user.phone = $scope.userphone;
+    	$scope.user.address = $scope.useraddress;
+    	
+    	$http.post('/addUser', $scope.user)
+        .then(function(response) {
+            if(response.data === true) {
+            	alert("Details updated successfully!");
+            }
+            else {
+                alert('Could not update details!');
+            }
+            $http.get('/getUser?username=' + $scope.username)
+            .then(function(response) {
+            	$scope.user = response.data;
+            	$scope.useraddress = $scope.user.address;
+            	$scope.userphone = $scope.user.phone;
+            	$scope.useremail = $scope.user.email;
+            });
+        },
+        function(response) {
+            alert(response.data.message);
+        });
+    	
+    	$("#updateContact").modal('hide');
     };
 
     $scope.logOut = function() {
